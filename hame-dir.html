@@ -1,0 +1,78 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="hame-dir">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h1>To-Do List!</h1>
+    <div>
+      <input type="text" name="" id="newTaskInput" placeholder="Agrega una Tarea">
+      <button on-click="saveTask" >Guardar</button>
+    </div> 
+    <div>
+      <ol>
+        <template is="dom-repeat" items="[[tasks]]" as="task">
+            <li>
+                <input on-change="someCheckboxChanged" type="checkbox" name="" id="">
+                [[task]]
+            </li>
+        </template>
+      </ol>
+    </div>
+    <h2>Tareas finalizadas</h2>
+    <div>
+      <ul>
+        <template is="dom-repeat" items="[[completedTasks]]" as="task">
+            <li>
+                [[task]]
+            </li>
+        </template>
+      </ul>
+    </div>
+  </template>
+
+  <script>
+    /**
+     * `hame-dir`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class HameDir extends Polymer.Element {
+      static get is() { return 'hame-dir'; }
+      static get properties() {
+        return {
+          tasks: {
+            type: Array,
+            value: []
+          },
+          completedTasks: {
+            type: Array,
+            value: []
+          }
+        };
+      }
+      saveTask(){
+        const inputNode = this.shadowRoot.querySelector('#newTaskInput');
+        this.tasks = [...this.tasks, inputNode.value];
+        inputNode.value = '';
+      }
+      someCheckboxChanged(event){
+        const checkboxIndex = this.tasks.indexOf(event.model.task);
+        const isChecked = event.currentTarget.checked;
+        if (isChecked){
+          const removedTask = this.tasks.splice(checkboxIndex, 1).pop();
+          this.tasks = [...this.tasks];
+          this.completedTasks = [...this.completedTasks, removedTask];
+        }
+      }
+    }
+
+    window.customElements.define(HameDir.is, HameDir);
+  </script>
+</dom-module>
